@@ -1,0 +1,126 @@
+<html lang="en">
+<style>
+    .container {
+        margin: 40px auto;
+        width: 80%;
+        text-align: center;
+    }
+    .button {
+        width: 160px;
+        height: 45px;
+        border-radius: 6px;
+        font-size: 15px;
+        margin-top: 20px;
+    }
+    img {
+        width: 897px;
+        height: 594px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    hr {
+        width: 400px;
+        margin-left: 0;
+    }
+    h3 {
+        display: inline-block;
+    }
+    #container {
+        display: none;
+    }
+    #container-edit {
+        display: none;
+    }
+    #container-edit input {
+        height: 32px;
+    }
+    #container-edit hr {
+        margin: 25px 0;
+    }
+    #container-edit input {
+        width: 195px;
+        font-size: 15px;
+    }
+</style>
+<script>
+    (async function init() {
+        const response = await fetch('http://localhost:3000/get-profile');
+        console.log("response", response);
+        const guitar = await response.json();
+        console.log(JSON.stringify(guitar));
+
+        document.getElementById('marca').textContent = guitar.marca ? guitar.marca : 'Fender';
+        document.getElementById('modelo').textContent = guitar.modelo ? guitar.modelo : 'stratocaster';
+        document.getElementById('precio').textContent = guitar.precio ? guitar.precio : 'mucho dinero';
+
+        const cont = document.getElementById('container');
+        cont.style.display = 'block';
+    })();
+
+    async function handleUpdateProfileRequest() {
+        const contEdit = document.getElementById('container-edit');
+        const cont = document.getElementById('container');
+
+        const payload = {
+            marca: document.getElementById('input-marca').value, 
+            modelo: document.getElementById('input-modelo').value, 
+            precio: document.getElementById('input-precio').value
+        };
+        
+        const response = await fetch('http://localhost:3000/update-profile', {
+            method: "POST",
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+        const jsonResponse = await response.json();
+
+        document.getElementById('marca').textContent = jsonResponse.marca;
+        document.getElementById('modelo').textContent = jsonResponse.modelo;
+        document.getElementById('precio').textContent = jsonResponse.precio;
+
+        cont.style.display = 'block';
+        contEdit.style.display = 'none';
+    }
+
+    function updateProfile() {
+        const contEdit = document.getElementById('container-edit');
+        const cont = document.getElementById('container');
+
+        document.getElementById('input-marca').value = document.getElementById('marca').textContent;
+        document.getElementById('input-modelo').value = document.getElementById('modelo').textContent;
+        document.getElementById('input-precio').value = document.getElementById('precio').textContent;
+
+        cont.style.display = 'none';
+        contEdit.style.display = 'block';
+    }
+</script>
+<body>
+    <div class='container' id='container'>
+        <h1>Guitar profile</h1>
+        <img src='profile-picture' alt="guitar-profile">
+        <br><br>
+        <span>Marca: </span><h3 id='marca'>Fender</h3>
+        <br>
+        <span>Modelo: </span><h3 id='modelo'>stratocaster</h3>
+        <br>
+        <span>Precio: </span><h3 id='precio'>mucho dinero</h3>
+        <br>
+        <button class='button' onclick="updateProfile()">Edit Profile</button>
+    </div>
+    <div class='container' id='container-edit'>
+        <h1>Guitar profile</h1>
+        <img src='profile-picture' alt="guitar-profile">
+        <br><br>
+        <span>Marca: </span><label for='input-marca'></label><input type="text" id='input-marca' value='Fender' />
+        <br>
+        <span>Modelo: </span><label for='input-modelo'></label><input type="text" id='input-modelo' value='stratocaster' />
+        <br>
+        <span>Precio: </span><label for='input-precio'></label><input type="text" id='input-precio' value='mucho dinero' />
+        <br>
+        <button class='button' onclick="handleUpdateProfileRequest()">Update Profile</button>
+    </div>
+</body>
+</html>

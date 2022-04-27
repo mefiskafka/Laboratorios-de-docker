@@ -1,0 +1,24 @@
+frontend y backend con js y node, mongoDB, MongoExpress
+
+$ docker pull mongo
+$ docker pull mongo-express
+
+$ docker build -t appjs .
+
+$ docker-compose up -d
+
+localhost:3000
+localhost:8080 (mongoExp)
+
+$ docker-compose down --volumes
+
+
+
+
+
+
+
+
+
+ 
+
